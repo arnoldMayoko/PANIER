@@ -116,39 +116,37 @@
         <script>
     const inputsQuantite = document.querySelectorAll('.select_quantite_panier');
     const montantTotalElement = document.querySelector('.prixTotal p');
-    let montantTotal = <?= $montant_total ?>; // Initialiser le montant total avec la valeur actuelle
+    let montantTotal = <?= $montant_total ?>; 
 
     inputsQuantite.forEach(input => {
-        const montantCommandeInitial = parseFloat(input.dataset.montant); // Récupérer le montant initial depuis l'attribut data-montant
-        const quantiteInitiale = parseFloat(input.value); // Récupérer la quantité initiale
+        const montantCommandeInitial = parseFloat(input.dataset.montant);
+        const quantiteInitiale = parseFloat(input.value); 
 
-        input.dataset.quantite = quantiteInitiale; // Stocker la quantité initiale dans l'attribut data-quantite
+        input.dataset.quantite = quantiteInitiale;
 
         input.addEventListener('change', function() {
-            const nouvelleQuantite = parseFloat(this.value); // Convertir la quantité en nombre à virgule flottante
-            const montantCommande = montantCommandeInitial; // Utiliser le montant initial pour le calcul
+            const nouvelleQuantite = parseFloat(this.value);
+            const montantCommande = montantCommandeInitial; 
 
-            // Calculer le montant précédent pour cette commande
             const montantCommandePrecedent = montantCommande * parseFloat(this.dataset.quantite);
 
             // Calculer le nouveau montant pour cette commande
             const nouveauMontantCommande = montantCommande * nouvelleQuantite;
 
-            // Mettre à jour le montant total en soustrayant le montant précédent et en ajoutant le nouveau montant
+          
             montantTotal = montantTotal - montantCommandePrecedent + nouveauMontantCommande;
             montantTotalElement.textContent = montantTotal.toFixed(2) + ' EUR';
 
-            // Mettre à jour l'attribut data-montant et data-quantite avec les nouvelles valeurs
             this.dataset.montant = nouveauMontantCommande;
             this.dataset.quantite = nouvelleQuantite;
 
-            // Envoyer la mise à jour au serveur via AJAX
+      
             const xhr = new XMLHttpRequest();
             xhr.open('POST', 'traitement_mise_a_jour_quantite.php', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    // Rien à faire ici car le montant total a déjà été mis à jour
+        
                 }
             };
             const data = `commande_id=${this.dataset.commandeId}&nouvelle_quantite=${nouvelleQuantite}`;
